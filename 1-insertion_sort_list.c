@@ -1,45 +1,46 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include "sort.h"
 
 /**
  * insertion_sort_list - Sorts a doubly linked list of integers
- *                       in ascending order using Insertion sort algorithm.
- * @list: A pointer to the head of the doubly linked list.
+ *                       in ascending order using the insertion sort algorithm.
+ * @list: Pointer to the head of the doubly linked list
  */
-void insertion_sort_list(int *list, int size)
+void insertion_sort_list(listint_t **list)
 {
-    int i, j, temp;
+	listint_t *unsorted, *curr, *temp, *prev, *next;
 
-    for (i = 1; i < size; i++)
-    {
-        temp = list[i];
-        j = i - 1;
+	if (list == NULL || *list == NULL || (*list)->next == NULL)
+		return;
 
-        while (j >= 0 && list[j] > temp)
-        {
-            list[j + 1] = list[j];
-            j--;
-        }
+	unsorted = (*list)->next;
+	while (unsorted != NULL)
+	{
+		curr = unsorted;
+		temp = curr->prev;
 
-        list[j + 1] = temp;
+		while (temp != NULL && temp->n > curr->n)
+		{
+			prev = temp->prev;
+			next = curr->next;
 
-        for (j = 0; j < size - 1; j++)
-            printf("%d, ", list[j]);
-        printf("%d\n", list[j]);
-    }
-}
+			if (prev != NULL)
+				prev->next = curr;
+			else
+				*list = curr;
 
-int main(void)
-{
-    int list[] = {19, 48, 99, 71, 13, 52, 96, 73, 86, 7};
-    int size = sizeof(list) / sizeof(list[0]);
-    int i;
+			if (next != NULL)
+				next->prev = temp;
 
-    for (i = 0; i < size - 1; i++)
-        printf("%d, ", list[i]);
-    printf("%d\n\n", list[i]);
+			temp->next = next;
+			temp->prev = curr;
+			curr->next = temp;
+			curr->prev = prev;
 
-    insertion_sort_list(list, size);
+			print_list(*list);
 
-    return 0;
+			temp = prev;
+		}
+
+		unsorted = unsorted->next;
+	}
 }
