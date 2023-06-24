@@ -2,7 +2,8 @@
 #include <stdio.h>
 
 /**
- * shell_sort - Sorts an array of integers in ascending order using the Shell sort algorithm
+ * shell_sort - Sorts an array of integers in 
+ * ascending order using the Shell sort algorithm
  * @array: The array to sort
  * @size: The size of the array
  */
