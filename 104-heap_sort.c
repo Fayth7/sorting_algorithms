@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include "sort.h"
+
+void swap(int *a, int *b);
+
+void sift_down(int *array, size_t start, size_t end, size_t size);
+{
+    size_t i;
+
+    for (i = 0; i < size; i++)
+    {
+        printf("%d", array[i]);
+        if (i != size - 1)
+            printf(", ");
+    }
+    printf("\n");
+}
+
+void swap(int *a, int *b)
+{
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void sift_down(int *array, size_t start, size_t end, size_t size)
+{
+    size_t root = start;
+
+    while (2 * root + 1 <= end)
+    {
+        size_t child = 2 * root + 1;
+        size_t swap_index = root;
+
+        if (array[swap_index] < array[child])
+            swap_index = child;
+
+        if (child + 1 <= end && array[swap_index] < array[child + 1])
+            swap_index = child + 1;
+
+        if (swap_index == root)
+            return;
+
+        swap(&array[root], &array[swap_index]);
+        print_array(array, size);
+
+        root = swap_index;
+    }
+}
+
+void heap_sort(int *array, size_t size)
+{
+    size_t i;
+
+    for (i = size / 2 - 1; i > 0; i--)
+        sift_down(array, i, size - 1, size);
+
+    for (i = size - 1; i > 0; i--)
+    {
+        swap(&array[0], &array[i]);
+        print_array(array, size);
+        sift_down(array, 0, i - 1, size);
+    }
+
+}
