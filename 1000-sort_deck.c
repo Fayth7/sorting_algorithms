@@ -1,59 +1,112 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "deck.h"
 
-int compare_cards(const void *a, const void *b);
+int _strcmp(const char *s1, const char *s2);
+char get_value(deck_node_t *card);
+void insertion_sort_deck_kind(deck_node_t **deck);
+void insertion_sort_deck_value(deck_node_t **deck);
+void sort_deck(deck_node_t **deck);
+
+int _strcmp(const char *s1, const char *s2)
+{
+    while (*s1 && *s2 && *s1 == *s2)
+    {
+        s1++;
+        s2++;
+    }
+
+    if (*s1 != *s2)
+        return (*s1 - *s2);
+    return (0);
+}
+
+char get_value(deck_node_t *card)
+{
+    if (_strcmp(card->card->value, "Ace") == 0)
+        return (0);
+    if (_strcmp(card->card->value, "1") == 0)
+        return (1);
+    if (_strcmp(card->card->value, "2") == 0)
+        return (2);
+    if (_strcmp(card->card->value, "3") == 0)
+        return (3);
+    if (_strcmp(card->card->value, "4") == 0)
+        return (4);
+    if (_strcmp(card->card->value, "5") == 0)
+        return (5);
+    if (_strcmp(card->card->value, "6") == 0)
+        return (6);
+    if (_strcmp(card->card->value, "7") == 0)
+        return (7);
+    if (_strcmp(card->card->value, "8") == 0)
+        return (8);
+    if (_strcmp(card->card->value, "9") == 0)
+        return (9);
+    if (_strcmp(card->card->value, "10") == 0)
+        return (10);
+    if (_strcmp(card->card->value, "Jack") == 0)
+        return (11);
+    if (_strcmp(card->card->value, "Queen") == 0)
+        return (12);
+    return (13);
+}
+
+void insertion_sort_deck_kind(deck_node_t **deck)
+{
+    deck_node_t *iter, *insert, *tmp;
+
+    for (iter = (*deck)->next; iter != NULL; iter = tmp)
+    {
+        tmp = iter->next;
+        insert = iter->prev;
+        while (insert != NULL && insert->card->kind > iter->card->kind)
+        {
+            insert->next = iter->next;
+            if (iter->next != NULL)
+                iter->next->prev = insert;
+            iter->prev = insert->prev;
+            iter->next = insert;
+            if (insert->prev != NULL)
+                insert->prev->next = iter;
+            else
+                *deck = iter;
+            insert->prev = iter;
+            insert = iter->prev;
+        }
+    }
+}
+
+void insertion_sort_deck_value(deck_node_t **deck)
+{
+    deck_node_t *iter, *insert, *tmp;
+
+    for (iter = (*deck)->next; iter != NULL; iter = tmp)
+    {
+        tmp = iter->next;
+        insert = iter->prev;
+        while (insert != NULL &&
+               insert->card->kind == iter->card->kind &&
+               get_value(insert) > get_value(iter))
+        {
+            insert->next = iter->next;
+            if (iter->next != NULL)
+                iter->next->prev = insert;
+            iter->prev = insert->prev;
+            iter->next = insert;
+            if (insert->prev != NULL)
+                insert->prev->next = iter;
+            else
+                *deck = iter;
+            insert->prev = iter;
+            insert = iter->prev;
+        }
+    }
+}
 
 void sort_deck(deck_node_t **deck)
 {
-    int num_cards = 0;
-    deck_node_t *current = *deck;
-    deck_node_t **nodes;
-    int i;
-
-    while (current != NULL)
-    {
-        num_cards++;
-        current = current->next;
-    }
-
-    nodes = (deck_node_t **)malloc(num_cards * sizeof(deck_node_t *));
-    if (nodes == NULL)
-    {
-        fprintf(stderr, "Memory allocation failed\n");
+    if (deck == NULL || *deck == NULL || (*deck)->next == NULL)
         return;
-    }
 
-    current = *deck;
-    for (i = 0; i < num_cards; i++)
-    {
-        nodes[i] = current;
-        current = current->next;
-    }
-
-    qsort(nodes, num_cards, sizeof(deck_node_t *), compare_cards);
-
-    *deck = nodes[0];
-    for (i = 0; i < num_cards - 1; i++)
-    {
-        nodes[i]->next = nodes[i + 1];
-        nodes[i + 1]->prev = nodes[i];
-    }
-    nodes[num_cards - 1]->next = NULL;
-
-    free(nodes);
-}
-
-int compare_cards(const void *a, const void *b)
-{
-    const deck_node_t *node_a = *(const deck_node_t **)a;
-    const deck_node_t *node_b = *(const deck_node_t **)b;
-
-    if (node_a->card->kind < node_b->card->kind)
-        return -1;
-    if (node_a->card->kind > node_b->card->kind)
-        return 1;
-
-    return strcmp(node_a->card->value, node_b->card->value);
+    insertion_sort_deck_kind(deck);
+    insertion_sort_deck_value(deck);
 }
