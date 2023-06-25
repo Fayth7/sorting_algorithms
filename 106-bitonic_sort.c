@@ -1,3 +1,8 @@
+/**
+ * File: 106-bitonic_sort.c
+ * Auth: Ampwera Faith
+ */
+
 #include <stdio.h>
 #include "sort.h"
 
